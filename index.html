@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyFlix</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .movie {
+            background-color: #333333;
+            padding: 10px;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+        .movie:hover {
+            transform: scale(1.05);
+        }
+        .movie img {
+            max-width: 100%;
+            height: auto;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            MyFlix
+        </div>
+        <div class="grid" id="movies-grid">
+            <!-- Movies will be dynamically added here -->
+        </div>
+        <div class="footer">
+            © 2023 MyFlix
+        </div>
+    </div>
+
+    <script>
+        const apiKey = '1a501fcb';
+        const moviesGrid = document.getElementById('movies-grid');
+
+        // Fetch movie data from OMDb API
+        async function fetchMovies() {
+            try {
+                const response = await fetch(`http://www.omdbapi.com/?s=ride&type=movie&apikey=${apiKey}`);
+                const data = await response.json();
+                return data.Search;
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+                return [];
+            }
+        }
+
+        // Display movies in the grid
+        async function displayMovies() {
+            const movies = await fetchMovies();
+            moviesGrid.innerHTML = '';
+            movies.forEach(movie => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie');
+                movieElement.innerHTML = `
+                    <img src="${movie.Poster}" alt="${movie.Title}">
+                    <div>${movie.Title}</div>
+                    <div>${movie.Year}</div>
+                `;
+                moviesGrid.appendChild(movieElement);
+            });
+        }
+
+        displayMovies();
+    </script>
+</body>
+</html>
